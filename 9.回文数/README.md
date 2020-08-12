@@ -25,39 +25,43 @@
 自我题解
 ----
 ### 🦄StringBuffer
-数组中的两个元素相加为目标值，返回两个元素的数组。
+`StringBuffer`用习惯了(笑)，`reverse()`方法是真的好用。
 
-首先我们能想到最简单的办法就是**暴力破解**
+直接翻转int值，再进行判等即可
 
-从数组第一个元素开始，与数组其他元素进行相加，结果与目标值匹配
+翻转的时候需要考虑
 
-相同则记录数组，不同则继续之前操作。
+1. **负数问题**
+2. **int类型取值范围问题**
 
-### 🧚‍Map.containsKey()
-依次将数组的[值]与[下标]放入map中，
 
-在放入过程中进行判断，如果map中**包含**key值为[target-当前数组值]
+### 🧚‍ 数学
+与数字反转一样，将值反转后进行判等
 
-答案即为：[通过map的get方法获取key值下标，当前下标]
-
-如果没有则继续添加数值，直至数值全部加入map。
+公式：
+> i = 0;
+> i = i*10 + x%10;
+> x = x/10;
 
 代码1
 ----
 ```java
 class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        int ans[] = new int[2];
-        for(int i=0;i<nums.length;i++){
-            for(int j=i;j<nums.length;j++){
-                if(nums[i]+nums[j]==target && i != j){
-                    ans[0] = i;
-                    ans[1] = j;
-                }
-            }
-        }
-        return ans;
-        
+    public boolean isPalindrome(int x) {
+        if (x < 0 || x > 2147483647 || x < -2147483647) {
+			return false;
+		}
+		StringBuffer sb = new StringBuffer(x + "");
+
+		sb.reverse();
+
+		long i = Long.parseLong(sb.toString());
+
+		if (x == i) {
+			return true;
+		}
+
+		return false;
     }
 }
 ```
@@ -66,15 +70,18 @@ class Solution {
 ----
 ```java
 class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer,Integer> numsMap = new HashMap<>();
-        for (int i = 0;i <= nums.length -1;i++){
-            if(numsMap.containsKey(target - nums[i]))
-                return new int[] {numsMap.get(target - nums[i]),i};
-            else
-                numsMap.put(nums[i],i);
+    public boolean isPalindrome(int x) {
+        if ((x%10 == 0 && x != 0) || x < 0){
+            return false;
         }
-        return null;
+        int temp = x;
+        int res = 0;
+        while(x > 0){
+            res = res * 10 + x % 10;
+            x /= 10;
+            
+        }
+        return temp == res;
     }
 }
 ```
