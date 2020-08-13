@@ -1,20 +1,18 @@
-# 26. 删除排序数组中的重复项
+# 27. 移除元素
 问题描述
 ----
-> 给定一个排序数组，你需要在 原地 删除重复出现的元素，使得每个元素只出现一次，返回移除后数组的新长度。
-> 不要使用额外的数组空间，你必须在 原地 修改输入数组 并在使用 O(1) 额外空间的条件下完成。
+> 给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素，并返回移除后数组的新长度。
+> 
+> 不要使用额外的数组空间，你必须仅使用 O(1) 额外空间并 原地 修改输入数组。
+> 
+> 元素的顺序可以改变。你不需要考虑数组中超出新长度后面的元素。
+
 
 问题示例
 ----
-> nums = [1,1,2], 
-
-> 返回新的长度 2, 原数组 nums 的前2位被修改为[1,2]。 
-
-
-
-> nums = [0,0,1,1,1,2,2,3,3,4],
-
-> 返回新的长度 5, 并且原数组 nums 的前5位被修改为[0, 1, 2, 3, 4]。
+> 给定 nums = [3,2,2,3], val = 3,
+> 
+> 函数应该返回新的长度 2, 并且 nums 中的前两个元素均为 2。
 
 *你不需要考虑数组中超出新长度后面的元素。*
 
@@ -27,15 +25,13 @@
 
 同时必须在**原数组**上进行修改，我们可以通过数组的下标进行操作；
 
-由于给定的是**排序数组**，我们可以用双下标去进行比较和修改。
+顺序**可以改变**，不用考虑数组顺序问题极大简化。
 
-首先声明初始化 一个下标index(值为1)、一个计数长度num(值为1)以及一个中间变量mid(数组第一个元素)，
+首先声明初始化 一个下标index(值为0),
 
-for循环遍历排序数组，如果数组元素与mid不同：
+for循环遍历数组，如果数组元素与val不同：
 1. 将数组下标为index的值替换为 当前数组元素nums[i];
 2. 下标index加一;
-3. 计数长度num加一;
-4. 中间变量替换为数组当前元素nums[i]。
 重复以上操作
 
 ### 🧚‍ 暂无其他题解
@@ -47,26 +43,19 @@ for循环遍历排序数组，如果数组元素与mid不同：
 ----
 ```java
 class Solution {
-    public int removeDuplicates(int[] nums) {
-        if(nums.length==0){
-            return 0;
-        }
-        int num=1,index=1,mid=nums[0];
-        for(int i =1;i< nums.length;i++){
-            if(mid != nums[i]){
-                nums[index] = nums[i];
-                index++;
-                num++;
-                mid = nums[i];
+    public int removeElement(int[] nums, int val) {
+        int index = 0;
+        for(int i = 0;i < nums.length;i++){
+            if(nums[i]!=val){
+                nums[index++] = nums[i];
             }
         }
-        
-        return num;
-        
+        return index;
     }
 }
 ```
 
 ### 炫耀一下
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/26.png)
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/27.png)
+
