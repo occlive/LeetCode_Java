@@ -32,14 +32,14 @@ ICON提示
 [b]:https://github.com/occlive/LeetCode_Java
 [c]:https://github.com/occlive/LeetCode_Java
 
-### 算法汇总
-
+算法汇总
+----
 #### [数据结构][data]
 
 [data]:https://github.com/occlive/DataStructure
 
-### 竞赛
-
+竞赛网站
+----
 [DC竞赛][dc]
 
 [力扣][lc]
