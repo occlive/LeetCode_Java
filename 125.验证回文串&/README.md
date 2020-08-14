@@ -1,84 +1,110 @@
-# 35. 搜索插入位置
+# 125. 验证回文串
 问题描述
 ----
-> 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
-> 
-> 你可以假设数组中无重复元素。
+> 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
+>
+> 说明：本题中，我们将空字符串定义为有效的回文串。
 
 
 问题示例
 ----
-> 输入: [1,3,5,6], 5
+> 输入: "A man, a plan, a canal: Panama"
 >
-> 输出: 2
+> 输出: true
 
-> 输入: [1,3,5,6], 2
+> 输入: "race a car"
 >
-> 输出: 1
-
-> 输入: [1,3,5,6], 0
->
-> 输出: 0
+> 输出: false
 
 自我题解
 ----
-### 🦄暴力破解
+### 🦄双指针 ASCII
 
-已知数组为**排序**数组，只需要将target插入数组中，使得数组还为**排序数组**。
+验证回文字符串，要求只需考虑数字或字母即可(**字母不区分大小写**)
 
-我们可以暴力破解，通过for循环遍历该数组，找到其适合的下标位置。
+|字符|ASCII范围|
+|----|----|
+|0-9|48~57|
+|A-Z|65~90|
+|a-z|97~122|
 
+利用**双指针**，分别从字符串的前后获取字符进行**ASCII码**的比较，判断是否为回文字符串。
 
-### 🦄二分查找法
-在排序数组中，**二分查找法**可以快速的查找到想要的值的下标。
+分别定义start、end作为字符串下标值，b1、b2作为是否进行判断的前提条件。
 
-首先声明初始化start、end和mid变量,作为二分法的前提条件;
+1. 对start下标字符进行判断
+   * 如果非数字、字母，则start指向该字符的后一位字符
+   * 如果是数字、字母，则start下标可进行判断
+   * `b1 = true`
+2. 对end下标字符进行判断
+   * 如果非数字、字母，则end指向该字符的前一位字符
+   * 如果是数字、字母，则end下标可进行判断
+   * `b2 = true`
+3. 如果b1、b2均满足条件，则对 start 、 end 下标指向的字符进行判断
+   * 相同；则进行下一轮判断
+   * 不同；返回`false`
 
-1. mid变量作为start和end的中间变量，`mid=(start+end)/2`，
-
-2. 如果排序数组对应mid下标的元素值与target值相同，则直接返回mid;
-
-3. 如果元素值比target值大，则`end = mid-1;`缩小一半的查找范围;
-
-4. 如果元素值比target值小，则`start = mid+1;`缩小一半的查找范围;
-
-重复以上步骤，直到 `start > end`。
-
-以上为二分查找法，如果查找不到target值，则需要将target插入到排序数组中,
-
-经过以上步骤，mid下标对应的排序数组元素属于target值的邻元素(左或右),
-
-通过对比排序数组对应mid下标的元素值与target的大小，可以判断target插入的位置: 
-
-* `nums[mid]>target`
-  * target在nums[mid]之前
-  * 返回mid
-
-* `nums[mid]<target`
-  * target在nums[mid]之后
-  * 返回mid+1
+直至`start >= end `为止，结束循环。
 
 
+### 🧚‍ 其他题解
 
-### 🧚‍ 暂无其他题解
+同样也是利用双指针，只不过利用方法分别独立
+* 判断是否为数字或字母 
+* 判断两字符是否相同
 
-🤣看不上人家的答案
+做题思路是一致的。
 
 
 代码1
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
-        
-        for(int i=0;i<nums.length;i++){
-            if(nums[i]>=target){
-                return i;
-            }
+    //A-Z  65-90
+    //a-z  97-122
+    //0-9  48-57
+    public boolean isPalindrome(String s) {
+        int start = 0;
+        int end = s.length()-1;
+        boolean b1 = false, b2= false;
+        while(start < end){
+            if((65<=s.charAt(start) && s.charAt(start)<=90)||
+               (97<=s.charAt(start) && s.charAt(start)<=122)||
+               (48<=s.charAt(start) && s.charAt(start)<=57)){
                 
+                b1 = true;
+            }else{
+                start++;
+            }
+            
+            if((65<=s.charAt(end) && s.charAt(end)<=90)||
+               (97<=s.charAt(end) && s.charAt(end)<=122)||
+               (48<=s.charAt(end) && s.charAt(end)<=57)){
+                
+                b2 = true;
+            }else{
+                end--;
+            }
+            
+            if(b1 == true && b2 == true){
+                
+                if(s.charAt(start)==s.charAt(end) || 
+                   (Math.abs((s.charAt(start)-s.charAt(end)))==32) &&
+                  s.charAt(start)>=65 && 
+                  s.charAt(end)>=65){
+                
+                }else{
+                    return false;
+                }
+                
+                start++;
+                end--;
+                b1 = false;
+                b2 = false;
+            }
         }
-        return nums.length;
-        
+        return true;
+
     }
 }
 ```
@@ -87,35 +113,46 @@ class Solution {
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
-        
-        int start = 0;
-        int end = nums.length-1;
-        int mid=0;
-        if(end==-1){
-            return 0;
+    public boolean isPalindrome(String s) {
+        if (s == null || s.length() == 0) {
+            return true;
         }
-        while(start <= end){
-            mid = (start+end)/2;
-            if(nums[mid]==target){
-                return mid;
-            }else if(nums[mid]<target){
-                start = mid+1;
-            }else if(nums[mid]>target){
-                end = mid-1;
+        
+        int n = s.length();
+        int i = 0, j = n - 1;
+        while (i <= j) {
+            while (i <= j && !validChar(s.charAt(i))) {
+                i++;
             }
+            while (i <= j && !validChar(s.charAt(j))) {
+                j--;
+            }
+            if (i <= j) {
+                if (!compare(s.charAt(i), s.charAt(j))) {
+                    return false;
+                } else {
+                    i++;
+                    j--;
+                }
+            } 
         }
-        
-        return nums[mid] < target?mid+1:mid;
-        
+        return true;
+    }
+    
+    private boolean validChar(char x) {
+        return ('Z' - x >= 0 && 'Z' - x <= 25) || ('z' - x >= 0 && 'z' - x <= 25) 
+            || ('9' - x >= 0 && '9' - x <= 9);
+    }
+    
+    private boolean compare(char x, char y) {
+        int gap = 'Z' - 'z';
+        return (x == y || (!('9' - x >= 0 && '9' - x <= 9) && (x - y == gap || y - x == gap)));
     }
 }
 ```
 
 ### 炫耀一下
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35.png)
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/125.png)
 
-
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35_1.png)
 
