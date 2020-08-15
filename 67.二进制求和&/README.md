@@ -1,83 +1,102 @@
-# 35. 搜索插入位置
+# 67. 二进制求和
 问题描述
 ----
-> 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
-> 
-> 你可以假设数组中无重复元素。
+> 给你两个二进制字符串，返回它们的和（用二进制表示）。
+>
+> 输入为 非空 字符串且只包含数字 `1` 和 `0`。
 
 
 问题示例
 ----
-> 输入: [1,3,5,6], 5
+> 输入: a = "11", b = "1"
 >
-> 输出: 2
+> 输出: "100"
 
-> 输入: [1,3,5,6], 2
+> 输入: a = "1010", b = "1011"
 >
-> 输出: 1
-
-> 输入: [1,3,5,6], 0
->
-> 输出: 0
+> 输出: "10101"
 
 自我题解
 ----
 ### 🦄暴力破解
 
-已知数组为**排序**数组，只需要将target插入数组中，使得数组还为**排序数组**。
+首先对两个字符串进行二者中**最短、等长**的循环（从末尾），
 
-我们可以暴力破解，通过for循环遍历该数组，找到其适合的下标位置。
+利用`boolean`型变量pix作为是否**进一**的依据；
 
+其次判断两个字符串中是否存在一个较长的未访问全部的字符串，
 
-### 🦄二分查找法
-在排序数组中，**二分查找法**可以快速的查找到想要的值的下标。
+有则进行单个字符串的循环。
 
-首先声明初始化start、end和mid变量,作为二分法的前提条件;
+最后再判断是否**进一**。
 
-1. mid变量作为start和end的中间变量，`mid=(start+end)/2`，
+### 🧚‍ StringBuilder.reverse() 
+和暴力破解类似，不过顺序不一样
 
-2. 如果排序数组对应mid下标的元素值与target值相同，则直接返回mid;
+利用`StringBuilder.reverse()`反转字符串，让二进制从字符串首开始。
 
-3. 如果元素值比target值大，则`end = mid-1;`缩小一半的查找范围;
+同时利用**二进制**的原理，逢2进1。
 
-4. 如果元素值比target值小，则`start = mid+1;`缩小一半的查找范围;
-
-重复以上步骤，直到 `start > end`。
-
-以上为二分查找法，如果查找不到target值，则需要将target插入到排序数组中,
-
-经过以上步骤，mid下标对应的排序数组元素属于target值的邻元素(左或右),
-
-通过对比排序数组对应mid下标的元素值与target的大小，可以判断target插入的位置: 
-
-* `nums[mid]>target`
-  * target在nums[mid]之前
-  * 返回mid
-
-* `nums[mid]<target`
-  * target在nums[mid]之后
-  * 返回mid+1
-
-
-
-### 🧚‍ 暂无其他题解
-
-🤣看不上人家的答案
+以及字符串`append()`链接方法。
 
 
 代码1
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
+    public String addBinary(String a, String b) {
+        String result = "";
+        int len1 = a.length()-1;
+        int len2 = b.length()-1;
+        boolean pix = false;
         
-        for(int i=0;i<nums.length;i++){
-            if(nums[i]>=target){
-                return i;
-            }
+        while(len1>=0 && len2 >= 0){
+            if(a.charAt(len1)=='0' && b.charAt(len2)=='0'){
+                result =pix?"1" + result:"0" + result;
+                pix = false;
+  
+            }else if((a.charAt(len1)=='1' && b.charAt(len2)=='0') || 
+                     (a.charAt(len1)=='0' && b.charAt(len2)=='1') ){
+                result = pix?"0" + result:"1" + result;
                 
+            }else if(a.charAt(len1)=='1' && b.charAt(len2)=='1'){
+                result = pix?"1" + result:"0" + result;
+        
+                pix = true;
+            }
+            len1--;
+            len2--;
         }
-        return nums.length;
+        
+        if(len1>=0){
+            while(len1>=0){
+                if(a.charAt(len1)=='0'){
+                    result = pix?"1"+result:"0"+result;
+                    pix = false;
+                }else{
+                    result = pix?"0"+result:"1"+result;
+                    
+                }
+                
+                len1--;
+            }
+        }else if(len2 >= 0){
+            while(len2>=0){
+                if(b.charAt(len2)=='0'){
+                    result = pix?"1"+result:"0"+result;
+                    pix = false;
+                }else{
+                    result = pix?"0"+result:"1"+result;
+                   
+                }
+                
+                len2--;
+            }
+        }
+        
+        result = pix?"1"+result:result;
+        
+        return result;
         
     }
 }
@@ -87,35 +106,23 @@ class Solution {
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
-        
-        int start = 0;
-        int end = nums.length-1;
-        int mid=0;
-        if(end==-1){
-            return 0;
+    public String addBinary(String a, String b) {
+        int aLen = a.length();
+        String a1 = new StringBuilder(a).reverse().toString();
+        String b1 = new StringBuilder(b).reverse().toString();
+        int bLen = b.length();
+        int max = Math.max(aLen, bLen);
+        StringBuilder sb = new StringBuilder();
+        int pre = 0;
+        for(int i = 0; i < max; i++){
+            int sum = pre;
+            sum += (i < aLen ? a1.charAt(i) - '0':0);
+            sum += (i < bLen ? b1.charAt(i) - '0':0);
+            sb.append(sum % 2);
+            pre=sum / 2;
         }
-        while(start <= end){
-            mid = (start+end)/2;
-            if(nums[mid]==target){
-                return mid;
-            }else if(nums[mid]<target){
-                start = mid+1;
-            }else if(nums[mid]>target){
-                end = mid-1;
-            }
-        }
-        
-        return nums[mid] < target?mid+1:mid;
-        
+        if(pre == 1) sb.append('1');
+        return sb.reverse().toString();
     }
 }
 ```
-
-### 炫耀一下
-
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35.png)
-
-
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35_1.png)
-
