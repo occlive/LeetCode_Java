@@ -1,84 +1,78 @@
-# 35. 搜索插入位置
+# 189. 旋转数组
 问题描述
 ----
-> 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
-> 
-> 你可以假设数组中无重复元素。
+> 给定一个数组，将数组中的元素向右移动 k 个位置，其中 k 是非负数。
 
+*要求使用空间复杂度为 O(1) 的 原地 算法。*
 
 问题示例
 ----
-> 输入: [1,3,5,6], 5
+> 输入: [1,2,3,4,5,6,7] 和 k = 3
 >
-> 输出: 2
-
-> 输入: [1,3,5,6], 2
+> 输出: [5,6,7,1,2,3,4]
 >
-> 输出: 1
-
-> 输入: [1,3,5,6], 0
+> 解释:
 >
-> 输出: 0
+> 向右旋转 1 步: [7,1,2,3,4,5,6]
+>
+> 向右旋转 2 步: [6,7,1,2,3,4,5]
+>
+> 向右旋转 3 步: [5,6,7,1,2,3,4]
 
 自我题解
 ----
 ### 🦄暴力破解
 
-已知数组为**排序**数组，只需要将target插入数组中，使得数组还为**排序数组**。
+通过多次循环实现旋转，每次循环向右移动一位。
 
-我们可以暴力破解，通过for循环遍历该数组，找到其适合的下标位置。
+### 🦄双数组
 
+通过复制一个相同的数组，对原数组的值进行移动。
 
-### 🦄二分查找法
-在排序数组中，**二分查找法**可以快速的查找到想要的值的下标。
+通过for循环依次对原数组的范围进行复制
+* 修改数组的前半部分；0到k-1
+* 修改数组的后半部分；k到length-1
 
-首先声明初始化start、end和mid变量,作为二分法的前提条件;
+### 🦄System.array()
 
-1. mid变量作为start和end的中间变量，`mid=(start+end)/2`，
+和**双数组**实现原理一样，不过利用的是`System.arraycopy()`数组赋值方法;
 
-2. 如果排序数组对应mid下标的元素值与target值相同，则直接返回mid;
+`System.arraycopy(arr1,start1,arr2,start2,len)`
+> arr1:参照数组
+> 
+> start1：参照数组开始的下标
+>
+> arr2:赋值数组
+>
+> start2:赋值数组开始的下标
+>
+> len:赋值的长度
 
-3. 如果元素值比target值大，则`end = mid-1;`缩小一半的查找范围;
+### 🧚‍ 反转
+*在原数组上进行操作*
 
-4. 如果元素值比target值小，则`start = mid+1;`缩小一半的查找范围;
+定义一个反转数组的方法，参数分别为`reverse(数组,开始,结束)`;
 
-重复以上步骤，直到 `start > end`。
+1. 先对整个数组进行**反转**
+2. 再对数组范围为 0到k-1 进行**反转**
+3. 再对数组范围为 k到length 进行**反转**
 
-以上为二分查找法，如果查找不到target值，则需要将target插入到排序数组中,
-
-经过以上步骤，mid下标对应的排序数组元素属于target值的邻元素(左或右),
-
-通过对比排序数组对应mid下标的元素值与target的大小，可以判断target插入的位置: 
-
-* `nums[mid]>target`
-  * target在nums[mid]之前
-  * 返回mid
-
-* `nums[mid]<target`
-  * target在nums[mid]之后
-  * 返回mid+1
-
-
-
-### 🧚‍ 暂无其他题解
-
-🤣看不上人家的答案
+数组向右平移k位即是：将整个数组**反转**后，再对以k为分界线的两部分数组范围**反转**。
 
 
 代码1
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
-        
-        for(int i=0;i<nums.length;i++){
-            if(nums[i]>=target){
-                return i;
+    public void rotate(int[] nums, int k) {
+        k %= nums.length;
+        for(int i=0;i<k;i++){
+            int mid = nums[nums.length-1];
+            for(int index = nums.length-1;index > 0;index--){
+                nums[index] = nums[index-1]; 
             }
-                
+            nums[0] = mid;
         }
-        return nums.length;
-        
     }
 }
 ```
@@ -87,35 +81,58 @@ class Solution {
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
-        
-        int start = 0;
-        int end = nums.length-1;
-        int mid=0;
-        if(end==-1){
-            return 0;
+    public void rotate(int[] nums, int k) {
+        k %= nums.length;
+        int[] arr = Arrays.copyOf(nums,nums.length);
+        for(int i=0;i<k;i++){
+            nums[i] = arr[nums.length-k+i];
+        }   
+        for(int i=k;i<nums.length;i++){
+            nums[i] = arr[i-k];
+        }   
+    }
+}
+```
+
+代码3
+----
+```java
+class Solution {
+    public void rotate(int[] nums, int k) {
+        k %= nums.length;
+        int[] arr = new int[nums.length];
+        arr = Arrays.copyOf(nums,nums.length);
+        System.arraycopy(arr,nums.length-k,nums,0,k);
+        System.arraycopy(arr,0,nums,k,nums.length-k);  
+    }
+}
+```
+
+代码4
+----
+```java
+class Solution {
+    public void rotate(int[] nums, int k) {
+        k %= nums.length;
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
+    }
+    public void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int temp = nums[start];
+            nums[start++] = nums[end];
+            nums[end--] = temp;
         }
-        while(start <= end){
-            mid = (start+end)/2;
-            if(nums[mid]==target){
-                return mid;
-            }else if(nums[mid]<target){
-                start = mid+1;
-            }else if(nums[mid]>target){
-                end = mid-1;
-            }
-        }
-        
-        return nums[mid] < target?mid+1:mid;
-        
     }
 }
 ```
 
 ### 炫耀一下
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35.png)
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/189.png)
 
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35_1.png)
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/189_1.png)
+
 
