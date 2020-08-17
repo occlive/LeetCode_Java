@@ -161,9 +161,24 @@ class Solution {
 ```
 
 ### 炫耀一下
+<div align=center>
+    
+    
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509.png)
+</div>
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35.png)
+<div align=center>
+    
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_1.png)
+</div>
+<div align=center>
+
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_2.png)
+</div>
+<div align=center>
+
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_3.png)
+</div>
 
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35_1.png)
 
