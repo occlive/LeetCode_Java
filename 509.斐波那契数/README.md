@@ -160,25 +160,25 @@ class Solution {
 } 
 ```
 
-### 炫耀一下
-<div align=center>
-    
-    
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509.png)
-</div>
+### 运算能力
 
-<div align=center>
-    
+自底向上记忆化
+
+
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509.png)
+
+自顶向下记忆化
+
+
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_1.png)
-</div>
-<div align=center>
+
+
+自底向上进行迭代
+
 
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_2.png)
-</div>
-<div align=center>
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_3.png)
-</div>
+
 
 
 
