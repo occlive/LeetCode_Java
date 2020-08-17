@@ -162,18 +162,18 @@ class Solution {
 
 ### 运算能力
 
-自底向上记忆化
+#### ✈自底向上记忆化
 
 
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509.png)
 
-自顶向下记忆化
+#### 🚀自顶向下记忆化(呜呼，起飞)
 
 
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_1.png)
 
 
-自底向上进行迭代
+#### 🛴自底向上进行迭代
 
 
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/509_2.png)
