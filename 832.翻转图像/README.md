@@ -1,76 +1,57 @@
-# 414. 第三大的数
+# 832. 翻转图像
 问题描述
 ----
-> 给定一个非空数组，返回此数组中第三大的数。如果不存在，则返回数组中最大的数。要求算法时间复杂度必须是O(n)。
+> 给定一个二进制矩阵 A，我们想先水平翻转图像，然后反转图像并返回结果。
+>
+> 水平翻转图片就是将图片的每一行都进行翻转，即逆序。例如，水平翻转 [1, 1, 0] 的结果是 [0, 1, 1]。
+>
+> 反转图片的意思是图片中的 0 全部被 1 替换， 1 全部被 0 替换。例如，反转 [0, 1, 1] 的结果是 [1, 0, 0]。
+
 
 问题示例
 ----
-> 输入: [3, 2, 1]
+> 输入: [[1,1,0],[1,0,1],[0,0,0]]
 >
-> 输出: 1
+> 输出: [[1,0,0],[0,1,0],[1,1,1]]
 >
-> 解释: 第三大的数是 1.
-
-> 输入: [2, 2, 3, 1]
+> 解释: 首先翻转每一行: [[0,1,1],[1,0,1],[0,0,0]]；然后反转图片: [[1,0,0],[0,1,0],[1,1,1]]
 >
-> 输出: 1
+> 1 <= A.length = A[0].length <= 20
 >
->解释: 注意，要求返回第三大的数，是指第三大且唯一出现的数。存在两个值为2的数，它们都排第二。
-
+> 0 <= A[i][j] <= 1
 自我题解
 ----
-### 🦄Arrays.sort()
-*Java永远的神。———策策*
-首先用`Arrays.sort()`对数组进行排序，
+### 🦄暴力破解
 
-对排序后的数组从后开始遍历
+定义一个新的二维数组，将原数组的值翻转赋值给新数组，
 
-对数组的值进行计数，如果值次数大于(中间变量进行判断)三次，则返回该值
+再将新的二维数组进行反转。
 
-如果循环完成后，次数小于三次，则返回最大值(数组最后一位元素)
+### 🧚‍ 原地翻转
 
-### 🧚‍ 暴力破解
-
-声明定义三个变量，初始化为类型最小值`Long.MIN_VALUE`，分别代表该数组的<kbd>第一大</kbd>、<kbd>第二大</kbd>以及<kbd>第三大元素</kbd>。
-
-通过`for`循环遍历数组，并进行如下判断
-* 如果元素大于<kbd>第一大变量</kbd>
-  * 将<kbd>第二大变量</kbd>值赋值给<kbd>第三大变量</kbd>
-  * 将<kbd>第一大变量</kbd>值赋值给第二大变量</kbd>
-  * 将元素值赋值给<kbd>第一大变量</kbd>
-* 如果元素小于<kbd>第一大变量</kbd>，大于<kbd>第二大变量</kbd>
-  * 将第二大变量值赋值给<kbd>第三大变量</kbd>
-  * 将元素值赋值给<kbd>第二大变量</kbd>
-* 如果元素小于<kbd>第二大变量</kbd>，大于<kbd>第三大变量</kbd>
-  * 将元素值赋值给<kbd>第三大变量</kbd>
-  
-结束循环后，判断<kbd>第三大变量</kbd>是否值为类型最小值`Long.MIN_VALUE`或是否为第二大值
-* 是，数组不存在第三大的值。返回<kbd>第三大变量</kbd>。
-* 不是，存在第三大的值。返回<kbd>第一大变量</kbd>。
+与暴力破解相同，不过是直接在原数组上进行操作。
 
 代码1
 ----
 ```java
 class Solution {
-    public int thirdMax(int[] nums) {
-        //排序
-        Arrays.sort(nums);
+    public int[][] flipAndInvertImage(int[][] A) {
+        int len = A[0].length-1;
+        int[][] arr = new int[A.length][A[0].length];
         
-        int num=1,ans=0,now=nums[nums.length-1];
-        for(int i = nums.length-2; i >= 0;i--){
-            if(nums[i]<now){
-                num++;
-                now=nums[i];
-            }
-            if(num==3){
-                ans = nums[i];
-                return ans;
+        //翻转
+        for(int i=0;i<A.length;i++){
+            for(int j = 0;j<A[i].length;j++){
+                arr[i][len-j] = A[i][j];
             }
         }
-        
-        return nums[nums.length-1];
-        
-        
+        //反转
+        for(int i=0;i<A.length;i++){
+            for(int j = 0;j<A[i].length;j++){
+                arr[i][len-j] = arr[i][len-j]==0?1:0;
+            }
+        }
+        return arr;
     }
 }
 ```
@@ -79,21 +60,27 @@ class Solution {
 ----
 ```java
 class Solution {
-    public int thirdMax(int[] nums) {
-       long first=Long.MIN_VALUE,second=Long.MIN_VALUE,third=Long.MIN_VALUE;
-		for(long num:nums){
-			if(num>first){
-				third=second;
-				second=first;
-				first=num;
-			}else if(num>second&&num<first){
-				third=second;
-				second=num;
-			}else if(num>third&&num<second){
-				third=num;
-			}
-		}
-		return (third==Long.MIN_VALUE||third==second)?(int)first:(int)third;
+    public int[][] flipAndInvertImage(int[][] A) {
+        int C = A[0].length;
+        for (int[] row: A)
+            for (int i = 0; i < (C + 1) / 2; ++i) {
+                int tmp = row[i] ^ 1;
+                row[i] = row[C - 1 - i] ^ 1;
+                row[C - 1 - i] = tmp;
+            }
+
+        return A;
     }
 }
+
 ```
+
+炫耀一下
+----
+
+
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/832.png)
+
+
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/832_1.png)
+
