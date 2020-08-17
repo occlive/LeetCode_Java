@@ -19,6 +19,8 @@
 > 1 <= A.length = A[0].length <= 20
 >
 > 0 <= A[i][j] <= 1
+
+
 自我题解
 ----
 ### 🦄暴力破解
@@ -75,11 +77,11 @@ class Solution {
 
 ```
 
-炫耀一下
-----
+### 炫耀一下
 
 
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/832.png)
+
 
 
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/832_1.png)
