@@ -1,84 +1,59 @@
-# 35. 搜索插入位置
+# 88. 合并两个有序数组
 问题描述
 ----
-> 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
-> 
-> 你可以假设数组中无重复元素。
-
+> 给你两个有序整数数组 nums1 和 nums2，请你将 nums2 合并到 nums1 中，使 nums1 成为一个有序数组。
+>
+> * 初始化 nums1 和 nums2 的元素数量分别为 m 和 n 。
+> * 你可以假设 nums1 有足够的空间（空间大小大于或等于 m + n）来保存 nums2 中的元素.
 
 问题示例
 ----
-> 输入: [1,3,5,6], 5
+> 输入:
 >
-> 输出: 2
+> nums1 = [1,2,3,0,0,0], m = 3
+>
+> nums2 = [2,5,6],       n = 3
+>
+> 输出: [1,2,2,3,5,6]
 
-> 输入: [1,3,5,6], 2
->
-> 输出: 1
-
-> 输入: [1,3,5,6], 0
->
-> 输出: 0
 
 自我题解
 ----
 ### 🦄暴力破解
 
-已知数组为**排序**数组，只需要将target插入数组中，使得数组还为**排序数组**。
+由题知，nums1数组的长度足够长。
 
-我们可以暴力破解，通过for循环遍历该数组，找到其适合的下标位置。
+所以我们只需要将nums2的元素放到nums1数组中，
 
+再通过`Arrays.sort()`方法对nums1进行排序即可。
 
-### 🦄二分查找法
-在排序数组中，**二分查找法**可以快速的查找到想要的值的下标。
+### 🦄🧚‍ 双指针 从小到大  
 
-首先声明初始化start、end和mid变量,作为二分法的前提条件;
+创建一个长度与nums1元素长度m相同的**新数组**arr，并将nums1的元素放到新数组arr中。
 
-1. mid变量作为start和end的中间变量，`mid=(start+end)/2`，
+利用**双指针**指向新数组arr和nums2数组的下标为0的元素，
 
-2. 如果排序数组对应mid下标的元素值与target值相同，则直接返回mid;
+从头开始对比nums2和arr数组中的元素大小，大的则放到nums1数组中。
 
-3. 如果元素值比target值大，则`end = mid-1;`缩小一半的查找范围;
+### 🧚‍ 双指针 从大到小
 
-4. 如果元素值比target值小，则`start = mid+1;`缩小一半的查找范围;
+不用创建新数组，直接将nums1**原数组**后多余的长度作为操作空间。
 
-重复以上步骤，直到 `start > end`。
+利用**双指针**指向新数组arr和nums2数组的下标为m、n的元素，
 
-以上为二分查找法，如果查找不到target值，则需要将target插入到排序数组中,
-
-经过以上步骤，mid下标对应的排序数组元素属于target值的邻元素(左或右),
-
-通过对比排序数组对应mid下标的元素值与target的大小，可以判断target插入的位置: 
-
-* `nums[mid]>target`
-  * target在nums[mid]之前
-  * 返回mid
-
-* `nums[mid]<target`
-  * target在nums[mid]之后
-  * 返回mid+1
-
-
-
-### 🧚‍ 暂无其他题解
-
-🤣看不上人家的答案
+从尾部开始对比nums2和arr数组中的元素大小，大的则放到nums1数组中。
 
 
 代码1
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
-        
-        for(int i=0;i<nums.length;i++){
-            if(nums[i]>=target){
-                return i;
-            }
-                
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int index = 0;
+        for(int i=m;i<n+m;i++){
+            nums1[i] = nums2[index++];
         }
-        return nums.length;
-        
+        Arrays.sort(nums1);
     }
 }
 ```
@@ -87,35 +62,58 @@ class Solution {
 ----
 ```java
 class Solution {
-    public int searchInsert(int[] nums, int target) {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int index = 0;
+        int index2 = 0;
+        int[] arr = Arrays.copyOf(nums1,m);
         
-        int start = 0;
-        int end = nums.length-1;
-        int mid=0;
-        if(end==-1){
-            return 0;
-        }
-        while(start <= end){
-            mid = (start+end)/2;
-            if(nums[mid]==target){
-                return mid;
-            }else if(nums[mid]<target){
-                start = mid+1;
-            }else if(nums[mid]>target){
-                end = mid-1;
+        int i = 0;
+        while(index<m || index2<n){
+            if(index<m && index2 < n){
+                nums1[i++] = arr[index]<=nums2[index2]?arr[index++]:nums2[index2++];
+            }else if(index<m && index2 >=n){
+                System.arraycopy(arr,index,nums1,i,m-index);
+                break;
+            }else{
+                 System.arraycopy(nums2,index2,nums1,i,n-index2);
+                break;
             }
-        }
+        }   
+    }
+}
+```
+
+代码3
+----
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int index = m-1;
+        int index2 = n-1;
+        int i = m+n-1;
         
-        return nums[mid] < target?mid+1:mid;
-        
+        while(index>=0 || index2>=0){
+            if(index>=0 && index2>=0){
+                nums1[i--] = nums1[index]>=nums2[index2]?nums1[index--]:nums2[index2--];
+            }else if(index2<0){
+                break;
+            }else if(index<0){
+                System.arraycopy(nums2,0,nums1,0,index2+1);
+                break;
+            }
+        }   
     }
 }
 ```
 
 ### 炫耀一下
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35.png)
+双指针1
 
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/88.png)
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/35_1.png)
+双指针2
+
+![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/88_2.png)
+
 
