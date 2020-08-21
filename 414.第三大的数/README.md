@@ -96,4 +96,4 @@ class Solution {
 		return (third==Long.MIN_VALUE||third==second)?(int)first:(int)third;
     }
 }
-```
+``` 
