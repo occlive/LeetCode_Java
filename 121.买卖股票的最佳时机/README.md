@@ -70,7 +70,8 @@ class Solution {
 }
 ```
 
-### 炫耀一下
+炫耀一下
+----
 
 ![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/121.png)
 
