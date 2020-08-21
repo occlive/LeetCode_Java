@@ -58,7 +58,7 @@ class Solution {
                     zero++;
                 }else if(nums[index]==0){
                     index++;
-                }
+                } 
             }else{
                 nums[zero++] = 0;
             }
