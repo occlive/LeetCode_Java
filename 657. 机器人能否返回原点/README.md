@@ -1,73 +1,72 @@
-# 69. x 的平方根
+# 657. 机器人能否返回原点
 问题描述
 ----
-> 实现 int sqrt(int x) 函数。
+> 在二维平面上，有一个机器人从原点 (0, 0) 开始。给出它的移动顺序，判断这个机器人在完成移动后是否在 (0, 0) 处结束。
 >
-> 计算并返回 x 的平方根，其中 x 是非负整数。
+> 移动顺序由字符串表示。字符 move[i] 表示其第 i 次移动。机器人的有效动作有 R（右），L（左），U（上）和 D（下）。如果机器人在完成所有动作后返回原点，则返回 true。否则，返回 false。
 >
-> 由于返回类型是整数，结果只保留整数的部分，小数部分将被舍去。
+> 注意：机器人“面朝”的方向无关紧要。 “R” 将始终使机器人向右移动一次，“L” 将始终向左移动等。此外，假设每次移动机器人的移动幅度相同。
+
 
 问题示例
 ----
-> 输入: 8
+> 输入: "UD"
 >
-> 输出: 2
-> 说明: 8 的平方根是 2.82842..., 由于返回类型是整数，小数部分将被舍去。
+> 输出: true
+>
+> 解释：机器人向上移动一次，然后向下移动一次。所有动作都具有相同的幅度，因此它最终回到它开始的原点。因此，我们返回 true。
 
 自我题解
 ----
-### 🦄Math.sqrt()
+### 🦄暴力破解 坐标系
 
-利用Java特有的`Math`工具类的`sqrt()`求平方根方法。
+二维平面上,且机器人“面朝”的方向无关紧要。我们可以将机器人看作一个点，根据RLUD移动方向与数学的x-y坐标系相同。
 
-只需将`double`类型转为`int`类型即可
+在坐标系中，机器人在原点(0,0)处，
+* R右移，x轴坐标加一
+* L右移，x轴坐标减一
+* U右移，y轴坐标加一
+* D右移，y轴坐标减一
 
-### 🧚‍ 二分查找
-平方根的性质： `k² ≤ x`的最大值
+通过`String.charAt()`获得每次运动的方向，进行判断即可;
 
-通过**二分法**，从0-x为范围进行查找
+机器人是否返回原点的条件为仍处于(0,0)坐标，即x=0,y=0。
 
-由于有小数的存在，我们只需找到`k² ≤ x` k的最大值。
 
+### 🧚‍ 暂无
 
 代码1
 ----
 ```java
 class Solution {
-    public int mySqrt(int x) {
-        
-        
-        return (int)Math.sqrt(x);
-        
-    }
-}
-```
-
-代码2
-----
-```java
-class Solution {
-    public int mySqrt(int x) {
-        int start = 0;
-        int end = x;
-        int result  = 0;
-        while(start<=end){
-            int mid = (start+end)/2;
-            if((long)mid*mid <= x){
-                start = mid+1;
-                result = mid;
-            }else{
-                end = mid - 1;   
-            }   
+    public boolean judgeCircle(String moves) {
+        int x = 0;
+        int y = 0;
+        for(int i=0;i<moves.length();i++){
+            switch(moves.charAt(i)){
+                case 'R':
+                    x++;
+                    break;
+                case 'L':
+                    x--;
+                    break;
+                case 'U':
+                    y++;
+                    break;
+                case 'D':
+                    y--;
+                    break;
+            }
         }
-        return result;
+        return x==0&&y==0?true:false;
         
     }
 }
 ```
 
-### 炫耀一下
 
-![](https://cdn.jsdelivr.net/gh/occlive/ImageStore//javabase/69.png)
+### 留言
+
+力扣终于做回人了，打卡题还挺简单的（笑）。
 
 
